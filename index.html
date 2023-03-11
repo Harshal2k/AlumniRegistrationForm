@@ -112,19 +112,12 @@
 
                 validateLength("#pincode");
                 setdata("pincode", "#pincode");
-                //localStorage.setItem("maritalStatus", $('input[name="maritalStatus"]:checked').val());
+                localStorage.setItem("maritalStatus", $('input[name="maritalStatus"]:checked').val());
 
                 setdata("afterGraduation", "#afterGraduation");
                 setdata("fondestMemory", "#fondestMemory");
-                // if ($(this).valid()) {
-                //     event.preventDefault();
-                //     alert('the form is valid');
-                // }
             });
         });
-        function changePage() {
-            //jQuery(window).attr("location", "./info.html");
-        }
     </script>
 </head>
 
@@ -294,7 +287,7 @@
         </div>
         <div class="mb-3">
             <label for="afterGraduation" class="form-label">Fondest memories of life @Goa University</label>
-            <textarea class="form-control" id="fondestMomory" rows="3"></textarea>
+            <textarea class="form-control" id="fondestMemory" rows="3"></textarea>
         </div>
         <button id="submit" class="btn btn-primary" type="submit">Submit form</button>
     </form>
