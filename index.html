@@ -7,7 +7,7 @@
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,39 +23,79 @@
         }
         const validateDob = () => {
             let maxday = 31;
-            if (Number($("#month").val()) > 12 && Number($("#month").val()) < 1) {
-                toggleValidationClass("#month", false);
-            } else {
+            let month = Number($("#month").val());
+            let year = Number($("#year").val());
+            let day = Number($("#day").val());
+            let isLeapYear = month == 2 && (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) ? true : false;
+            if (month <= 12 && month >= 1) {
                 toggleValidationClass("#month", true);
-                Number($("#month").val()) / 2 == 0 ? maxday = 30 : null;
+                month / 2 == 0 ? maxday = 30 : null;
+            } else {
+                toggleValidationClass("#month", false);
             }
-            if (Number($("#year").val()) > 1900 && Number($("#year").val()) < (new Date().getFullYear() - 20)) {
-                
+            maxday = isLeapYear ? 29 : 28;
+            if (year > 1900 && year <= (new Date().getFullYear() - 20)) {
+                toggleValidationClass("#year", true);
+            } else {
+                toggleValidationClass("#year", false);
             }
 
+            if (day >= 1 && day <= maxday) {
+                toggleValidationClass("#day", true);
+            } else {
+                toggleValidationClass("#day", false);
+            }
+        }
+
+        function validateLength(id) {
+            console.log({ val: $(id).val() });
+            $(id).val().length == 0 ? toggleValidationClass(id, false) :
+                toggleValidationClass(id, true);
+        };
+
+        const validateEmail = (id) => {
+            const emaiPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+            !$(id).val().match(emaiPattern) ? toggleValidationClass(id, false) :
+                toggleValidationClass(id, true);
+        }
+
+        const validatePhone = (id) => {
+            $(id).val().length != 10 ? toggleValidationClass(id, false) :
+                toggleValidationClass(id, true);
+        }
+
+        const valiateYearOfPassing = (id) => {
+            Number($(id).val()) >= 1900 && Number($(id).val()) <= (
+                new Date()
+                    .getFullYear() - 1) ?
+                toggleValidationClass(id, true) :
+                toggleValidationClass(id, false);
         }
 
         $(document).ready(function () {
             $("#submit").click(function () {
-                $("#fname").val().length == 0 ? toggleValidationClass("#fname", false) :
-                    toggleValidationClass("#fname", true);
+                validateLength("#fname");
 
-                $("#lname").val().length == 0 ? toggleValidationClass("#lname", false) :
-                    toggleValidationClass("#lname", true);
+                validateLength("#lname");
 
-                const emaiPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-                !$("#email").val().match(emaiPattern) ? toggleValidationClass("#email", false) :
-                    toggleValidationClass("#email", true);
+                validateEmail("#email");
 
-                $("#phone").val().length < 10 ? toggleValidationClass("#phone", false) :
-                    toggleValidationClass("#phone", true);
+                validatePhone("#phone");
 
+                valiateYearOfPassing("#yearOfPassing");
 
-                Number($("#yearOfPassing").val()) < 1900 && Number($("#yearOfPassing").val()) < (
-                        new Date()
-                        .getFullYear() - 5) ?
-                    toggleValidationClass("#yearOfPassing", false) :
-                    toggleValidationClass("#yearOfPassing", true);
+                validateDob();
+
+                validateLength("#profession");
+
+                validateLength('#street')
+
+                validateLength("#city");
+
+                validateLength("#state");
+
+                validateLength("#pincode");
+
             });
         });
     </script>
@@ -67,17 +107,23 @@
             <label class="form-label">Name</label>
             <div class="row">
                 <div class="col">
-                    <input type="text" id="fname" class="form-control" placeholder="First name" aria-label="First name"
-                        required>
+                    <input oninput="validateLength('#fname')" type="text" id="fname" class="form-control"
+                        placeholder="First name" aria-label="First name" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
+                    <div class="invalid-feedback">
+                        First Name is mandatory
+                    </div>
                 </div>
                 <div class="col">
-                    <input type="text" id="lname" class="form-control" placeholder="Last name" aria-label="Last name"
-                        required>
+                    <input oninput="validateLength('#lname')" type="text" id="lname" class="form-control"
+                        placeholder="Last name" aria-label="Last name" required>
                     <div class="valid-feedback">
                         Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Last Name is mandatory
                     </div>
                 </div>
             </div>
@@ -86,11 +132,25 @@
             <div class="row">
                 <div class="col">
                     <label class="form-label">Email</label>
-                    <input id="email" type="email" class="form-control" placeholder="Email" aria-label="First name">
+                    <input oninput="validateEmail('#email')" id="email" type="email" class="form-control"
+                        placeholder="Email" aria-label="First name" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Invalid E-Mail address
+                    </div>
                 </div>
                 <div class="col">
                     <label class="form-label">Phone</label>
-                    <input id="phone" type="number" class="form-control" placeholder="Phone" aria-label="Last name">
+                    <input oninput="validatePhone('#phone')" id="phone" type="number" class="form-control"
+                        placeholder="Phone" aria-label="Last name" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Phone number should be of 10 digits
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,7 +158,14 @@
             <div class="row">
                 <div class="col">
                     <label class="form-label">Year of Passing</label>
-                    <input id="yearOfPassing" type="number" class="form-control">
+                    <input oninput="valiateYearOfPassing('#yearOfPassing')" id="yearOfPassing" type="number"
+                        class="form-control" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        To be an alumni the year of passing should be 1 years before current year
+                    </div>
                 </div>
                 <div class="col">
 
@@ -109,13 +176,25 @@
             <label class="form-label">Date Of Birth</label>
             <div class="row">
                 <div class="col">
-                    <input id="day" type="number" class="form-control" placeholder="Day">
+                    <input oninput="validateDob()" id="day" type="number" class="form-control" placeholder="Day"
+                        required>
+                    <div class="invalid-feedback">
+                        Invalid Day
+                    </div>
                 </div>
                 <div class="col">
-                    <input id="month" type="number" class="form-control" placeholder="Month">
+                    <input oninput="validateDob()" id="month" type="number" class="form-control" placeholder="Month"
+                        required>
+                    <div class="invalid-feedback">
+                        Invalid Month
+                    </div>
                 </div>
                 <div class="col">
-                    <input id="year" type="number" class="form-control" placeholder="Year">
+                    <input oninput="validateDob()" id="year" type="number" class="form-control" placeholder="Year"
+                        required>
+                    <div class="invalid-feedback">
+                        Invalid Year, birth year should be 20 years before the current year
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,11 +202,12 @@
             <label class="form-label d-block">Marital Status</label>
             <div class="d-flex justify-content-around">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="maritalStatus" id="inlineRadio1" value="option1">
+                    <input class="form-check-input" type="radio" name="maritalStatus" id="single" value="single"
+                        checked>
                     <label class="form-check-label" for="inlineRadio1">Single</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="maritalStatus" id="inlineRadio2" value="option2">
+                    <input class="form-check-input" type="radio" name="maritalStatus" id="married" value="married">
                     <label class="form-check-label" for="inlineRadio2">Married</label>
                 </div>
             </div>
@@ -136,7 +216,11 @@
             <div class="row">
                 <div class="col">
                     <label class="form-label">Profession</label>
-                    <input type="text" class="form-control">
+                    <input oninput="validateLength('#profession')" id="profession" type="text" class="form-control"
+                        required>
+                    <div class="invalid-feedback">
+                        Profession is mandatory
+                    </div>
                 </div>
                 <div class="col">
 
@@ -144,18 +228,35 @@
             </div>
         </div>
         <div class="mb-3">
-            <label class="form-label mb-2">Address</label>
-            <input type="text" placeholder="Street Address" class="form-control mb-3">
-            <input type="text" placeholder="Street Address Line 2" class="form-control mb-3">
-            <div class="row mb-3">
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="City">
-                </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="State / Province">
+            <div class="mb-3">
+                <label class="form-label mb-2">Address</label>
+                <input oninput="validateLength('#street')" id="street" type="text" placeholder="Street Address"
+                    class="form-control">
+                <div class="invalid-feedback">
+                    Street Address is mandatory
                 </div>
             </div>
-            <input type="number" placeholder="Postal / Zip Code" class="form-control mb-3">
+            <div class="row mb-3">
+                <div class="col">
+                    <input oninput="validateLength('#city')" id="city" type="text" class="form-control"
+                        placeholder="City" required>
+                    <div class="invalid-feedback">
+                        City is mandatory
+                    </div>
+                </div>
+                <div class="col">
+                    <input oninput="validateLength('#state')" id="state" type="text" class="form-control"
+                        placeholder="State / Province" required>
+                    <div class="invalid-feedback">
+                        State / Province is mandatory
+                    </div>
+                </div>
+            </div>
+            <input oninput="validateLength('#pincode')" id="pincode" type="number" placeholder="Postal / Zip Code"
+                class="form-control mb-3" required>
+            <div class="invalid-feedback">
+                Postal / Zip Code is mandatory
+            </div>
         </div>
         <div class="mb-3">
             <label for="afterGraduation" class="form-label">Where did life take you after graduation?</label>
