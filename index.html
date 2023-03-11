@@ -48,7 +48,6 @@
         }
 
         function validateLength(id) {
-            console.log({ val: $(id).val() });
             $(id).val().length == 0 ? toggleValidationClass(id, false) :
                 toggleValidationClass(id, true);
         };
@@ -72,37 +71,68 @@
                 toggleValidationClass(id, false);
         }
 
+        const setdata = (name, id) => {
+            const value = $(id).val();
+            localStorage.setItem(name, value);
+        }
+
         $(document).ready(function () {
             $("#submit").click(function () {
                 validateLength("#fname");
+                setdata("fname", "#fname");
 
                 validateLength("#lname");
+                setdata("lname", "#lname");
 
                 validateEmail("#email");
+                setdata("email", "#email");
 
                 validatePhone("#phone");
+                setdata("phone", "#phone");
 
                 valiateYearOfPassing("#yearOfPassing");
+                setdata("yearOfPassing", "#yearOfPassing");
 
                 validateDob();
+                setdata("day", "#day");
+                setdata("month", "#month");
+                setdata("year", "#year");
 
                 validateLength("#profession");
+                setdata("profession", "#profession");
 
                 validateLength('#street')
+                setdata("street", "#street");
 
                 validateLength("#city");
+                setdata("city", "#city");
 
                 validateLength("#state");
+                setdata("state", "#state");
 
                 validateLength("#pincode");
+                setdata("pincode", "#pincode");
+                //localStorage.setItem("maritalStatus", $('input[name="maritalStatus"]:checked').val());
 
+                setdata("afterGraduation", "#afterGraduation");
+                setdata("fondestMemory", "#fondestMemory");
+                // if ($(this).valid()) {
+                //     event.preventDefault();
+                //     alert('the form is valid');
+                // }
             });
         });
+        function changePage() {
+            //jQuery(window).attr("location", "./info.html");
+        }
     </script>
 </head>
 
 <body>
-    <form style="background-color: #fbfbfb; padding: 2rem;" class="row g-3 needs-validation">
+    <h1 class="title">Alumni Registration</h1>
+    <!-- <img src="./boy.png">
+    <img src="./girl.png"> -->
+    <form method="get" action="./info.html" style="background-color: #cffff6ed; padding: 2rem;" class="row g-3 needs-validation formStyle">
         <div class="mb-3">
             <label class="form-label">Name</label>
             <div class="row">
@@ -264,7 +294,7 @@
         </div>
         <div class="mb-3">
             <label for="afterGraduation" class="form-label">Fondest memories of life @Goa University</label>
-            <textarea class="form-control" id="afterGraduation" rows="3"></textarea>
+            <textarea class="form-control" id="fondestMomory" rows="3"></textarea>
         </div>
         <button id="submit" class="btn btn-primary" type="submit">Submit form</button>
     </form>
